@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Asistencia Turística</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --secondary: #0ea5e9;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        /* Role Selector */
+        .role-selector {
+            display: flex;
+            gap: 10px;
+            background: var(--light);
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        .role-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: var(--dark);
+        }
+
+        .role-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .role-btn:hover:not(.active) {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 12px 24px;
+            border: none;
+            background: var(--light);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: var(--dark);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Content */
+        .content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            min-height: 500px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .card-description {
+            color: var(--gray);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-primary { background: #dbeafe; color: var(--primary); }
+        .badge-success { background: #d1fae5; color: var(--success); }
+        .badge-warning { background: #fef3c7; color: #d97706; }
+        .badge-danger { background: #fee2e2; color: var(--danger); }
+
+        /* Map */
+        .map-container {
+            background: #f0f9ff;
+            border: 2px dashed var(--secondary);
+            border-radius: 12px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-placeholder {
+            text-align: center;
+            color: var(--gray);
+        }
+
+        .map-marker {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: var(--danger);
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .map-marker:hover {
+            transform: rotate(-45deg) scale(1.2);
+        }
+
+        .map-marker::after {
+            content: '';
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            transform: rotate(45deg);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--gray);
+            color: white;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid var(--success);
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid var(--accent);
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid var(--danger);
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-online {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .status-offline {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .role-selector {
+                flex-direction: column;
+                width: 100%;
+            }
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        .incident-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .incident-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🗺️</div>
+                <span>Portal Turístico</span>
+            </div>
+            <div class="role-selector">
+                <button class="role-btn active" onclick="changeRole('visitante')">Visitante</button>
+                <button class="role-btn" onclick="changeRole('coordinador')">Coordinador</button>
+                <button class="role-btn" onclick="changeRole('organizador')">Organizador</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav id="navigation">
+            <!-- Navigation will be injected by JavaScript -->
+        </nav>
+
+        <div class="content">
+            <!-- Sección: Centros de Asistencia -->
+            <div id="centros" class="section active">
+                <h1 class="page-title">Centros de Asistencia</h1>
+                <p class="page-subtitle">Encuentra puntos de información turística en toda la ciudad</p>
+
+                <div class="map-container">
+                    <div class="map-placeholder">
+                        <div style="font-size: 64px; margin-bottom: 10px;">🗺️</div>
+                        <h3>Mapa Interactivo</h3>
+                        <p>Ubicación de centros de asistencia fijos y móviles</p>
+                    </div>
+                    <div class="map-marker" style="top: 30%; left: 25%;" title="Centro Principal"></div>
+                    <div class="map-marker" style="top: 60%; left: 70%;" title="Centro Móvil 1"></div>
+                    <div class="map-marker" style="top: 45%; left: 50%;" title="Centro Plaza"></div>
+                </div>
+
+                <div class="card-grid" id="centros-grid"></div>
+            </div>
+
+            <!-- Sección: Atractivos Turísticos -->
+            <div id="atractivos" class="section">
+                <h1 class="page-title">Atractivos Turísticos</h1>
+                <p class="page-subtitle">Descubre los mejores lugares de la ciudad</p>
+                <div class="card-grid" id="atractivos-grid"></div>
+            </div>
+
+            <!-- Sección: Eventos -->
+            <div id="eventos" class="section">
+                <h1 class="page-title">Eventos Culturales</h1>
+                <p class="page-subtitle">Agenda de actividades y espectáculos</p>
+                <div class="card-grid" id="eventos-grid"></div>
+            </div>
+
+            <!-- Sección: Reportar Incidente -->
+            <div id="incidente" class="section">
+                <h1 class="page-title">Reportar Incidente</h1>
+                <p class="page-subtitle">Ayúdanos a mejorar tu experiencia informando problemas</p>
+
+                <form id="incident-form">
+                    <div class="form-group">
+                        <label class="form-label">Lugar del incidente</label>
+                        <input type="text" class="form-input" id="lugar" placeholder="Ej: Plaza Principal" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fecha</label>
+                        <input type="date" class="form-input" id="fecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descripción del problema</label>
+                        <textarea class="form-textarea" id="detalle" placeholder="Describe lo ocurrido..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email de contacto (opcional)</label>
+                        <input type="email" class="form-input" id="email" placeholder="tu@email.com">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enviar Reporte</button>
+                </form>
+            </div>
+
+            <!-- Sección: Panel Coordinador -->
+            <div id="coordinador-panel" class="section">
+                <h1 class="page-title">Panel de Coordinación</h1>
+                <p class="page-subtitle">Gestión de incidentes y actualizaciones del sistema</p>
+
+                <div class="admin-panel">
+                    <h3 style="margin-bottom: 15px;">Estado del Sistema</h3>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 20px;">
+                        <div class="status-indicator status-online">
+                            <div class="status-dot" style="background: var(--success);"></div>
+                            Sistema de Posicionamiento
+                        </div>
+                        <div class="status-indicator status-online">
+                            <div class="status-dot" style="background: var(--success);"></div>
+                            Sistema de Correo
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="retryUpdate()">🔄 Reintentar Actualización</button>
+                </div>
+
+                <h3 style="margin: 30px 0 15px;">Incidentes Reportados</h3>
+                <div id="incidents-list"></div>
+            </div>
+
+            <!-- Sección: Panel Organizador -->
+            <div id="organizador-panel" class="section">
+                <h1 class="page-title">Panel de Organización</h1>
+                <p class="page-subtitle">Registra eventos y atractivos turísticos</p>
+
+                <div style="display: flex; gap: 20px; margin-bottom: 30px;">
+                    <button class="btn btn-primary" onclick="showForm('evento')">➕ Nuevo Evento</button>
+                    <button class="btn btn-success" onclick="showForm('atractivo')">➕ Nuevo Atractivo</button>
+                </div>
+
+                <!-- Formulario Evento -->
+                <div id="form-evento" style="display: none;">
+                    <h3 style="margin-bottom: 20px;">Registrar Evento</h3>
+                    <form id="evento-form">
+                        <div class="form-group">
+                            <label class="form-label">Título del evento</label>
+                            <input type="text" class="form-input" placeholder="Nombre del evento" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tipo de espectáculo</label>
+                            <select class="form-select" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="cine">Cine Ambulante</option>
+                                <option value="obra">Obra de Artista Local</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Descripción</label>
+                            <textarea class="form-textarea" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Fecha y hora</label>
+                            <input type="datetime-local" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Lugar</label>
+                            <input type="text" class="form-input" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Publicar Evento</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideForm('evento')">Cancelar</button>
+                    </form>
+                </div>
+
+                <!-- Formulario Atractivo -->
+                <div id="form-atractivo" style="display: none;">
+                    <h3 style="margin-bottom: 20px;">Registrar Atractivo Turístico</h3>
+                    <form id="atractivo-form">
+                        <div class="form-group">
+                            <label class="form-label">Nombre del sitio</label>
+                            <input type="text" class="form-input" placeholder="Nombre del lugar" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Descripción resumida</label>
+                            <input type="text" class="form-input" placeholder="Breve descripción" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Descripción completa</label>
+                            <textarea class="form-textarea" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Publicar Atractivo</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideForm('atractivo')">Cancelar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo
+        const centros = [
+            { id: 1, nombre: 'Centro Principal', tipo: 'Fijo', direccion: 'Av. Principal 123', horario: '8:00 - 20:00', estado: 'Abierto' },
+            { id: 2, nombre: 'Centro Móvil Norte', tipo: 'Móvil', direccion: 'Plaza del Norte', horario: '9:00 - 18:00', estado: 'Abierto' },
+            { id: 3, nombre: 'Centro Plaza', tipo: 'Fijo', direccion: 'Plaza Central s/n', horario: '7:00 - 22:00', estado: 'Abierto' }
+        ];
+
+        const atractivos = [
+            { id: 1, nombre: 'Museo Histórico', icono: '🏛️', resumen: 'Patrimonio cultural de la ciudad', descripcion: 'Museo con más de 200 años de historia y colecciones únicas.' },
+            { id: 2, nombre: 'Parque Natural', icono: '🌳', resumen: 'Reserva ecológica urbana', descripcion: 'Área verde de 50 hectáreas con senderos y fauna local.' },
+            { id: 3, nombre: 'Catedral', icono: '⛪', resumen: 'Arquitectura colonial', descripcion: 'Edificación del siglo XVIII, joya arquitectónica de la región.' },
+            { id: 4, nombre: 'Mirador del Valle', icono: '🏔️', resumen: 'Vista panorámica', descripcion: 'El mejor punto para fotografiar la ciudad y el valle.' }
+        ];
+
+        const eventos = [
+            { id: 1, titulo: 'Cine bajo las estrellas', tipo: 'Cine Ambulante', fecha: '2025-10-25 20:00', lugar: 'Plaza Principal', icono: '🎬' },
+            { id: 2, titulo: 'Concierto de Jazz', tipo: 'Obra de Artista Local', fecha: '2025-10-28 19:00', lugar: 'Teatro Municipal', icono: '🎵' },
+            { id: 3, titulo: 'Festival de Folklore', tipo: 'Obra de Artista Local', fecha: '2025-11-02 18:00', lugar: 'Plaza del Norte', icono: '🎭' }
+        ];
+
+        let incidents = [];
+        let currentRole = 'visitante';
+
+        // Navegación según rol
+        const navigation = {
+            visitante: ['centros', 'atractivos', 'eventos', 'incidente'],
+            coordinador: ['centros', 'coordinador-panel'],
+            organizador: ['centros', 'atractivos', 'eventos', 'organizador-panel']
+        };
+
+        const navLabels = {
+            centros: '📍 Centros',
+            atractivos: '🏛️ Atractivos',
+            eventos: '🎭 Eventos',
+            incidente: '⚠️ Reportar Incidente',
+            'coordinador-panel': '⚙️ Panel de Control',
+            'organizador-panel': '📝 Gestionar Contenido'
+        };
+
+        function changeRole(role) {
+            currentRole = role;
+            document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderNavigation();
+            showSection(navigation[role][0]);
+        }
+
+        function renderNavigation() {
+            const nav = document.getElementById('navigation');
+            const tabs = navigation[currentRole].map(section =>
+                `<button class="nav-tab" onclick="showSection('${section}')">${navLabels[section]}</button>`
+            ).join('');
+            nav.innerHTML = `<div class="nav-tabs">${tabs}</div>`;
+            nav.querySelector('.nav-tab').classList.add('active');
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            const activeTab = Array.from(document.querySelectorAll('.nav-tab')).find(t => t.textContent.includes(navLabels[sectionId].split(' ')[1]));
+            if (activeTab) activeTab.classList.add('active');
+        }
+
+        function renderCentros() {
+            const grid = document.getElementById('centros-grid');
+            grid.innerHTML = centros.map(centro => `
+                <div class="card">
+                    <div class="card-image">${centro.tipo === 'Fijo' ? '🏢' : '🚐'}</div>
+                    <div class="card-title">${centro.nombre}</div>
+                    <div class="card-description">
+                        <p><strong>📍</strong> ${centro.direccion}</p>
+                        <p><strong>🕐</strong> ${centro.horario}</p>
+                    </div>
+                    <div class="card-meta">
+                        <span class="badge badge-primary">${centro.tipo}</span>
+                        <span class="badge badge-success">${centro.estado}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAtractivos() {
+            const grid = document.getElementById('atractivos-grid');
+            grid.innerHTML = atractivos.map(atractivo => `
+                <div class="card">
+                    <div class="card-image">${atractivo.icono}</div>
+                    <div class="card-title">${atractivo.nombre}</div>
+                    <div class="card-description">
+                        <p>${atractivo.resumen}</p>
+                        <p style="margin-top: 10px; color: var(--dark); font-size: 13px;">${atractivo.descripcion}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderEventos() {
+            const grid = document.getElementById('eventos-grid');
+            grid.innerHTML = eventos.map(evento => `
+                <div class="card">
+                    <div class="card-image">${evento.icono}</div>
+                    <div class="card-title">${evento.titulo}</div>
+                    <div class="card-description">
+                        <p><strong>📅</strong> ${new Date(evento.fecha).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
+                        <p><strong>📍</strong> ${evento.lugar}</p>
+                    </div>
+                    <div class="card-meta">
+                        <span class="badge badge-warning">${evento.tipo}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderIncidents() {
+            const list = document.getElementById('incidents-list');
+            if (incidents.length === 0) {
+                list.innerHTML = '<div class="alert alert-success">✅ No hay incidentes pendientes</div>';
+                return;
+            }
+            list.innerHTML = incidents.map((inc, idx) => `
+                <div class="incident-card">
+                    <div class="incident-header">
+                        <div>
+                            <div class="card-title">${inc.lugar}</div>
+                            <p style="color: var(--gray); font-size: 14px;">${inc.fecha}</p>
+                        </div>
+                        <span class="badge ${inc.estado === 'Pendiente' ? 'badge-warning' : 'badge-success'}">${inc.estado}</span>
+                    </div>
+                    <div class="card-description">${inc.detalle}</div>
+                    ${inc.email ? `<p style="margin-top: 10px; font-size: 13px;"><strong>Contacto:</strong> ${inc.email}</p>` : ''}
+                    ${inc.estado === 'Pendiente' ? `
+                        <div class="action-buttons">
+                            <button class="btn btn-success" onclick="resolveIncident(${idx})">✓ Resolver</button>
+                            <button class="btn btn-danger" onclick="dismissIncident(${idx})">✗ Desestimar</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('incident-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const incident = {
+                lugar: document.getElementById('lugar').value,
+                fecha: document.getElementById('fecha').value,
+                detalle: document.getElementById('detalle').value,
+                email: document.getElementById('email').value,
+                estado: 'Pendiente'
+            };
+            incidents.push(incident);
+            this.reset();
+            alert('✅ Incidente reportado correctamente. Gracias por tu colaboración.');
+        });
+
+        function resolveIncident(idx) {
+            incidents[idx].estado = 'Resuelto';
+            alert('✅ Incidente marcado como resuelto. Se ha enviado notificación al usuario.');
+            renderIncidents();
+        }
+
+        function dismissIncident(idx) {
+            incidents[idx].estado = 'Desestimado';
+            renderIncidents();
+        }
+
+        function retryUpdate() {
+            alert('🔄 Solicitando actualización al sistema de posicionamiento...\n✅ Actualización completada exitosamente.');
+        }
+
+        function showForm(type) {
+            document.getElementById(`form-${type}`).style.display = 'block';
+        }
+
+        function hideForm(type) {
+            document.getElementById(`form-${type}`).style.display = 'none';
+        }
+
+        document.getElementById('evento-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ Evento publicado correctamente');
+            this.reset();
+            hideForm('evento');
+        });
+
+        document.getElementById('atractivo-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ Atractivo turístico publicado correctamente');
+            this.reset();
+            hideForm('atractivo');
+        });
+
+        // Inicialización
+        renderNavigation();
+        renderCentros();
+        renderAtractivos();
+        renderEventos();
+        renderIncidents();
+    </script>
+</body>
+</html>
